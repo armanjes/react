@@ -1,9 +1,9 @@
-import Counter from './components/Counter.jsx';
+import UseEffect from "./components/UseEffect.jsx";
 
 const App = () => {
   return (
     <>
-      <Counter/>
+      <UseEffect/>
     </>
   )
 }
