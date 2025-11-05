@@ -5,6 +5,7 @@ const App = () => {
   return (
     <>
       <Welcome name="John Doe" />
+      <h1>this is useReducer Branch</h1>
       <Card>
         <h2>Welcome</h2>
         <p>Lorem ipsum dolor sit amet.</p>
