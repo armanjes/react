@@ -12,7 +12,7 @@ function reducer(state, action) {
     case "increment_age":
       return { ...state, age: state.age + 1 };
     case "change_name":
-      return { ...state, name: action.n };
+      return { ...state, name: action.name };
   }
     throw Error("Unknown action: " + action.type);
 }
@@ -30,7 +30,7 @@ const App = () => {
         type="text"
         value={state.name}
         onChange={(e) =>
-          dispatch({ type: "change_name", n: e.target.value })
+          dispatch({ type: "change_name", name: e.target.value })
         }
         placeholder="Type here"
       />
