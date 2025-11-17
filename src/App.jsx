@@ -1,33 +1,45 @@
 import { useState } from "react";
-import AddTodo from "./components/AddTodo";
-import FilterTodo from "./components/FilterTodo";
-import Todos from "./components/Todos";
+import AddTodoForm from "./components/AddTodoForm";
+import TodoList from "./components/TodoList";
 
 const App = () => {
-  const [todo, setTodo] = useState([
-    {
-      id: 1,
-      title: "learn js",
-      isCompleted: false,
-    },
-    {
-      id: 2,
-      title: "learn ts",
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      title: "learn py",
-      isCompleted: false,
-    },
-  ]);
-  const [input, setInput] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = (title) => {
+    setTodos((prev) => [
+      ...prev,
+      { id: Date.now(), title, isCompleted: false },
+    ]);
+  };
+
+  const deleteTodo = (uid) => {
+    setTodos((prev) => prev.filter((item) => item.id !== uid));
+  };
+
+  const editTodo = (uid, title) => {
+    setTodos((prev) =>
+      prev.map((item) => (item.id === uid ? { ...item, title } : item))
+    );
+  };
+
+  const toggleComplete = (uid) => {
+    setTodos((prev) =>
+      prev.map((item) =>
+        item.id === uid ? { ...item, isCompleted: !item.isCompleted } : item
+      )
+    );
+  };
 
   return (
     <div className="w-[96%] sm:w-[75%] md:w-[55%] mx-auto py-12">
-      <AddTodo addTodo={{ todo, setTodo, input, setInput }} />
-      <FilterTodo />
-      <Todos todoArray={{ todo, setTodo }} />
+      <h1 className="text-4xl text-center mb-3 font-semibold">Add Todo</h1>
+      <AddTodoForm onAddTodo={addTodo} />
+      <TodoList
+        todos={todos}
+        onDeleteTodo={deleteTodo}
+        onEditTodo={editTodo}
+        onCompleteTodo={toggleComplete}
+      />
     </div>
   );
 };
