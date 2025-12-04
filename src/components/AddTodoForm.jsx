@@ -1,28 +1,32 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo } from "../features/todos/todoSlice";
 
-export default function AddTodoForm({ onAddTodo }) {
-  const [input, setInput] = useState("");
+export default function AddTodoForm() {
+  const inputRef = useRef("")
+  const dispatch = useDispatch();
 
-  const hanldeSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!input.trim()) return;
-
-    onAddTodo(input.trim());
-    setInput("");
+    const trimmed = inputRef.current.value.trim();
+    if(!trimmed) return
+    dispatch(addTodo(trimmed));
+    inputRef.current.value = ""
   };
 
   return (
-    <form onSubmit={hanldeSubmit} className="flex gap-2 mb-4">
+    <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
       <input
         type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        ref={inputRef}
         placeholder="Enter a task"
         className="flex-1 border p-2 rounded"
       />
 
-      <button className="bg-blue-500 text-white px-4 rounded cursor-pointer hover:bg-blue-600">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 rounded cursor-pointer hover:bg-blue-600"
+      >
         Add
       </button>
     </form>

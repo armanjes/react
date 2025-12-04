@@ -1,75 +1,71 @@
+import { useDispatch } from "react-redux";
+import {
+  removeTodo,
+  toggleComplete,
+  editTodo,
+} from "../features/todos/todoSlice";
 import { useState } from "react";
 
-export default function TodoItem({
-  title,
-  uid,
-  onDeleteTodo,
-  onCompleteTodo,
-  onEditTodo,
-  onCompleted,
-}) {
+export default function TodoItem({ todo }) {
+  const dispatch = useDispatch();
+
+  const [title, setTitle] = useState(todo.title);
   const [isEditing, setIsEditing] = useState(false);
-  const [todoTitle, setTodoTitle] = useState(title);
+
+  const handleSave = () => {
+    dispatch(editTodo({ title, id: todo.id }));
+    setIsEditing(false);
+  };
 
   return (
     <li
-      onClick={() => onCompleteTodo(uid)}
-      className={`flex items-center justify-between p-2 rounded cursor-pointer ${
-        onCompleted ? "bg-green-400/40" : "bg-gray-100"
+      className={`flex items-center justify-between shadow p-2 rounded ${
+        todo.completed && "bg-green-200"
       }`}
     >
-      {/* Checkbox */}
       <input
         type="checkbox"
-        checked={onCompleted}
-        readOnly
+        checked={todo.completed}
+        onChange={() => dispatch(toggleComplete(todo.id))}
         className="w-4 h-4 accent-blue-500"
       />
 
-      {/* Task */}
-      <input
-        type="text"
-        value={todoTitle}
-        onChange={(e) => setTodoTitle(e.target.value)}
-        onClick={(e) => isEditing && e.stopPropagation()}
-        readOnly={!isEditing}
-        className={`border p-1 outline-none w-full mx-2 bg-transparent rounded ${
-          isEditing ? "outline-black/10" : "border-transparent cursor-pointer"
-        }`}
-      />
-
-      {/* Buttons */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-
-            if (onCompleted) return;
-
-            // if saving
-            if (isEditing) {
-              if (!todoTitle.trim().length) return; // prevent empty save
-              onEditTodo(uid, todoTitle);
-            }
-
-            setIsEditing(!isEditing);
-          }}
-          className={`px-3 py-1 text-sm cursor-pointer text-white rounded-full
-            ${
-              isEditing
-                ? "bg-green-500 hover:bg-green-400"
-                : "bg-orange-500 hover:bg-orange-400"
-            }`}
+      {isEditing ? (
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="border p-1 rounded w-full mx-2"
+        />
+      ) : (
+        <span
+          className={`w-full mx-2 ${
+            todo.completed ? "line-through text-gray-400" : ""
+          }`}
         >
-          {isEditing ? "Save" : "Edit"}
-        </button>
+          {title}
+        </span>
+      )}
+
+      <div className="flex gap-2">
+        {isEditing ? (
+          <button
+            onClick={handleSave}
+            className="px-3 py-1 bg-green-500 text-white rounded cursor-pointer"
+          >
+            Save
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="px-3 py-1 bg-orange-500 text-white rounded cursor-pointer"
+          >
+            Edit
+          </button>
+        )}
 
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteTodo(uid);
-          }}
-          className="px-3 py-1 text-sm cursor-pointer bg-red-500 text-white rounded-full hover:bg-red-400"
+          onClick={() => dispatch(removeTodo(todo.id))}
+          className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
         >
           Delete
         </button>
